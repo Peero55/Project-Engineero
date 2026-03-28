@@ -1,0 +1,19 @@
+{
+    "name": "legendary-hunts",
+    "private": true,
+    "packageManager": "pnpm@10",
+    "scripts": {
+      "dev": "turbo dev",
+      "build": "turbo build",
+      "lint": "turbo lint",
+      "typecheck": "turbo typecheck",
+      "format": "prettier --write .",
+      "env:check": "tsx scripts/validate-env.ts"
+    },
+    "devDependencies": {
+      "prettier": "^3.6.0",
+      "turbo": "^2.5.0",
+      "tsx": "^4.20.0",
+      "typescript": "^5.9.0"
+    }
+  }

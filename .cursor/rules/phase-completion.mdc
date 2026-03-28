@@ -1,0 +1,32 @@
+---
+description: When completing a phase or plan, append a completion report to docs/PHASE_COMPLETIONS.md
+alwaysApply: true
+---
+
+# Phase/Plan Completion — Coordinator Handoff
+
+When you complete a **plan** (from .cursor/plans/) or a **phase** (from TASKLIST.md), you MUST append a new section to [docs/PHASE_COMPLETIONS.md](docs/PHASE_COMPLETIONS.md) using this structure:
+
+```markdown
+## [Phase/Plan Name] — [Date]
+
+### Phase completed:
+- Brief description of what was completed
+
+### Files changed:
+- List each file path and what changed (created/modified/deleted)
+
+### Migrations added:
+- List new migration files and what they do
+
+### Contracts added/changed:
+- API shapes, types, interfaces, config exports
+
+### Open questions:
+- Anything left ambiguous or for later decisions
+
+### Known risks:
+- Migration issues, technical debt, dual implementations, etc.
+```
+
+This keeps the coordinator agent (next session or handoff) informed. Do this *before* claiming the phase/plan is done.

@@ -1,0 +1,10 @@
+# Legendary Hunts — Cursor rules (root pointer)
+
+Canonical project rules live under **`.cursor/rules/`**, especially:
+
+- `.cursor/rules/alignment.mdc` — architecture, encounter model, tier rules, integration boundaries
+- `.cursor/rules/phase-completion.mdc` — handoff template for completed phases
+
+Product requirements: **`.cursor/rules/PRD.md`**
+
+When generating code, follow alignment first; the PRD describes product vision and Network+ scope. If the PRD conflicts with alignment on **technical** matters (core vocabulary, encounter variability, Slack vs core boundaries), **alignment wins**.
