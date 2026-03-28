@@ -192,6 +192,8 @@ Do not assume edits here affect the live app.
 
 Large separate project with ClojureScript, Clojure, Rust, JS, and package workspaces. It is not referenced by the root pnpm workspace and appears to be external/vendor or adjacent source material rather than part of the Legendary Hunts runtime path.
 
+Engineero-specific Penpot automation scripts live under `scripts/penpot/` (not inside the submodule tree).
+
 Do not start here unless the task is explicitly about `penpot`.
 
 ## 8. Where To Look First
