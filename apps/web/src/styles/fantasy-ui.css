@@ -1,0 +1,683 @@
+/**
+ * Fantasy encounter shell — ported from legendary-hunts-react-starter baseline.
+ * Scoped under .lh-fantasy-ui so app shell / Tailwind pages stay unchanged elsewhere.
+ *
+ * Penpot-aligned aliases (--lh-*) are canonical; legacy --gold / --text / etc. map to them.
+ */
+.lh-fantasy-ui {
+  --lh-bg-base: #07111a;
+  --lh-accent-gold: #f2c94c;
+  --lh-accent-ember: #ff7a18;
+  --lh-accent-arcane-blue: #3a86ff;
+  --lh-text-primary: #f3f6ff;
+  --lh-text-muted: #9db2d1;
+  --bg: var(--lh-bg-base);
+  --panel: #0d1826;
+  --panel-2: #132236;
+  --line: #27384f;
+  --text: var(--lh-text-primary);
+  --muted: var(--lh-text-muted);
+  --gold: var(--lh-accent-gold);
+  --ember: var(--lh-accent-ember);
+  --arcane: var(--lh-accent-arcane-blue);
+  --success: #74e39a;
+  --danger: #ff6262;
+  --shadow: 0 18px 40px rgba(0, 0, 0, 0.34);
+  box-sizing: border-box;
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, #12223b 0%, var(--bg) 42%, #040911 100%);
+  color: var(--text);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.lh-fantasy-ui *,
+.lh-fantasy-ui *::before,
+.lh-fantasy-ui *::after {
+  box-sizing: border-box;
+}
+
+.lh-fantasy-ui a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.lh-fantasy-ui button {
+  font: inherit;
+}
+
+.lh-fantasy-ui .screen-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 8px 0 24px;
+}
+.lh-fantasy-ui .screen-shell__header {
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(10, 18, 30, 0.92), rgba(6, 12, 22, 0.88));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.lh-fantasy-ui .screen-shell__main {
+  position: relative;
+}
+.lh-fantasy-ui .screen-shell__action {
+  border-radius: 20px;
+  border: 1px solid rgba(242, 201, 76, 0.15);
+  background: rgba(5, 10, 18, 0.75);
+  padding: 16px 18px;
+  box-shadow: inset 0 0 24px rgba(58, 134, 255, 0.06);
+}
+.lh-fantasy-ui .screen-shell__feedback {
+  min-height: 48px;
+}
+
+.lh-fantasy-ui .player-info-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+}
+.lh-fantasy-ui .player-info-bar__identity {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.lh-fantasy-ui .player-info-bar__name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+.lh-fantasy-ui .player-info-bar__level {
+  font-size: 0.8rem;
+  color: var(--gold);
+  border: 1px solid rgba(242, 201, 76, 0.25);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.lh-fantasy-ui .player-info-bar__bars {
+  flex: 1;
+  min-width: 200px;
+  display: grid;
+  gap: 8px;
+}
+.lh-fantasy-ui .player-info-bar__track {
+  height: 8px;
+  border-radius: 999px;
+  background: #152233;
+  overflow: hidden;
+}
+.lh-fantasy-ui .player-info-bar__fill--hp {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #8b2942, #ff6262, #ff9f43);
+  box-shadow: 0 0 12px rgba(255, 98, 98, 0.35);
+}
+.lh-fantasy-ui .player-info-bar__xp {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.lh-fantasy-ui .panel {
+  background: linear-gradient(180deg, rgba(13, 24, 38, 0.96), rgba(9, 17, 28, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.lh-fantasy-ui .panel-header {
+  padding: 18px 20px 6px;
+}
+.lh-fantasy-ui .panel-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.lh-fantasy-ui .panel-subtitle {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.lh-fantasy-ui .panel-body {
+  padding: 18px 20px 22px;
+}
+.lh-fantasy-ui .panel--battle {
+  border-color: rgba(255, 122, 24, 0.22);
+  background: linear-gradient(180deg, rgba(20, 14, 10, 0.5), rgba(9, 17, 28, 0.96));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 122, 24, 0.08),
+    var(--shadow);
+}
+.lh-fantasy-ui .panel--dashboard {
+  border-color: rgba(58, 134, 255, 0.14);
+  background: linear-gradient(180deg, rgba(12, 22, 38, 0.96), rgba(9, 17, 28, 0.94));
+}
+.lh-fantasy-ui .panel--glow {
+  box-shadow:
+    inset 0 0 28px rgba(58, 134, 255, 0.08),
+    0 0 0 1px rgba(242, 201, 76, 0.12),
+    var(--shadow);
+}
+
+.lh-fantasy-ui .attack-bar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.lh-fantasy-ui .btn-stone {
+  border-radius: 16px;
+  padding: 14px 12px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text);
+  background: linear-gradient(180deg, #1a2a3f, #0f1825);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+.lh-fantasy-ui .btn-stone:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.lh-fantasy-ui .btn-stone:active:not(:disabled) {
+  transform: scale(0.98);
+  filter: brightness(1.08);
+}
+.lh-fantasy-ui .btn-stone--light {
+  box-shadow: inset 0 0 20px rgba(242, 201, 76, 0.12);
+  border-color: rgba(242, 201, 76, 0.35);
+}
+.lh-fantasy-ui .btn-stone--medium {
+  box-shadow: inset 0 0 20px rgba(58, 134, 255, 0.15);
+  border-color: rgba(58, 134, 255, 0.35);
+}
+.lh-fantasy-ui .btn-stone--heavy {
+  box-shadow: inset 0 0 20px rgba(255, 122, 24, 0.18);
+  border-color: rgba(255, 122, 24, 0.4);
+}
+.lh-fantasy-ui .btn-stone--ultimate {
+  box-shadow: inset 0 0 22px rgba(255, 98, 98, 0.2);
+  border-color: rgba(255, 98, 98, 0.45);
+}
+.lh-fantasy-ui .btn-stone--disabled,
+.lh-fantasy-ui .btn-stone:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  filter: grayscale(0.35);
+  box-shadow: none;
+}
+
+.lh-fantasy-ui .action-bar-wrap__label {
+  margin: 0 0 12px;
+  font-size: 0.88rem;
+}
+
+.lh-fantasy-ui .bar-frame {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.lh-fantasy-ui .bar-frame__label {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.lh-fantasy-ui .bar-frame__values {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.lh-fantasy-ui .progress-track--hp {
+  height: 12px;
+  background: #1a0f12;
+  border: 1px solid rgba(255, 98, 98, 0.2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.lh-fantasy-ui .progress-fill--hp {
+  height: 100%;
+  background: linear-gradient(90deg, #6b1c2e, #ff6262, #ff9f43);
+  box-shadow: 0 0 14px rgba(255, 98, 98, 0.35);
+  transition: width 0.45s ease;
+  border-radius: 999px;
+}
+.lh-fantasy-ui .progress-track--xp {
+  height: 12px;
+  background: #121c2a;
+  border: 1px solid rgba(242, 201, 76, 0.2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.lh-fantasy-ui .progress-fill--xp {
+  height: 100%;
+  background: linear-gradient(90deg, #6b4c12, #f2c94c, #6be6ff);
+  box-shadow: 0 0 14px rgba(242, 201, 76, 0.25);
+  transition: width 0.45s ease;
+  border-radius: 999px;
+}
+
+.lh-fantasy-ui .bar-frame--flash-hit {
+  animation: lh-bar-pulse-hit 0.75s ease;
+  border-color: rgba(242, 201, 76, 0.45) !important;
+}
+.lh-fantasy-ui .bar-frame--flash-damage {
+  animation: lh-bar-shake-damage 0.55s ease;
+  border-color: rgba(255, 98, 98, 0.45) !important;
+}
+.lh-fantasy-ui .bar-frame--flash-xp {
+  animation: lh-bar-pulse-xp 0.85s ease;
+  border-color: rgba(58, 134, 255, 0.4) !important;
+}
+@keyframes lh-bar-pulse-hit {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(242, 201, 76, 0);
+  }
+  45% {
+    box-shadow: 0 0 22px rgba(242, 201, 76, 0.35);
+  }
+}
+@keyframes lh-bar-shake-damage {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  30% {
+    transform: translateX(-4px);
+  }
+  60% {
+    transform: translateX(4px);
+  }
+}
+@keyframes lh-bar-pulse-xp {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(58, 134, 255, 0);
+  }
+  50% {
+    box-shadow: 0 0 24px rgba(58, 134, 255, 0.35);
+  }
+}
+
+.lh-fantasy-ui .muted {
+  color: var(--muted);
+}
+.lh-fantasy-ui .question-card {
+  padding: 20px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.lh-fantasy-ui .question-card--correct {
+  animation: lh-fantasy-pulse-gold 0.7s ease;
+  border-color: rgba(242, 201, 76, 0.35) !important;
+}
+.lh-fantasy-ui .question-card--incorrect {
+  animation: lh-fantasy-shake 0.35s ease;
+  border-color: rgba(255, 98, 98, 0.4) !important;
+}
+.lh-fantasy-ui .question-card__prompt {
+  margin: 10px 0 0;
+  line-height: 1.35;
+}
+.lh-fantasy-ui .answer-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+.lh-fantasy-ui .answer-choice {
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  color: inherit;
+}
+.lh-fantasy-ui .answer-choice:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+.lh-fantasy-ui .answer-choice__letter {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--lh-accent-gold) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--lh-accent-gold) 32%, transparent);
+  color: var(--lh-accent-gold);
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+.lh-fantasy-ui .answer-choice--right {
+  border-color: rgba(242, 201, 76, 0.5) !important;
+  background: rgba(242, 201, 76, 0.1) !important;
+}
+.lh-fantasy-ui .answer-choice--wrong {
+  border-color: rgba(255, 98, 98, 0.45) !important;
+  background: rgba(255, 98, 98, 0.08) !important;
+}
+
+@keyframes lh-fantasy-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+@keyframes lh-fantasy-pulse-gold {
+  0% {
+    box-shadow: 0 0 0 rgba(242, 201, 76, 0);
+  }
+  40% {
+    box-shadow: 0 0 28px rgba(242, 201, 76, 0.25);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(242, 201, 76, 0);
+  }
+}
+
+.lh-fantasy-ui .feedback-layer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.lh-fantasy-ui .feedback-explanation {
+  flex: 1 1 100%;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  font-weight: 500;
+  color: var(--muted);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.22);
+  animation: lh-fantasy-float-in 0.45s ease;
+}
+.lh-fantasy-ui .feedback-chip {
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: lh-fantasy-float-in 0.4s ease;
+}
+.lh-fantasy-ui .feedback-chip--correct {
+  background: rgba(242, 201, 76, 0.12);
+  border-color: rgba(242, 201, 76, 0.35);
+  color: #ffe7a8;
+}
+.lh-fantasy-ui .feedback-chip--damage {
+  animation: lh-fantasy-shake 0.3s ease;
+  background: rgba(255, 98, 98, 0.12);
+  border-color: rgba(255, 98, 98, 0.35);
+  color: #ffc9c9;
+}
+.lh-fantasy-ui .feedback-chip--xp {
+  background: rgba(58, 134, 255, 0.12);
+  border-color: rgba(58, 134, 255, 0.3);
+  color: #dce7ff;
+}
+.lh-fantasy-ui .feedback-chip--failure {
+  background: rgba(40, 20, 22, 0.6);
+  border-color: rgba(255, 98, 98, 0.25);
+  color: #ffaeae;
+  filter: brightness(0.95);
+}
+@keyframes lh-fantasy-float-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lh-fantasy-ui .fantasy-stone-link {
+  margin-top: 12px;
+  font-size: 0.88rem;
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.lh-fantasy-ui .fantasy-puzzle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 12px 14px;
+}
+.lh-fantasy-ui .fantasy-puzzle-actions {
+  display: flex;
+  gap: 6px;
+}
+.lh-fantasy-ui .fantasy-puzzle-actions button {
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+.lh-fantasy-ui .fantasy-puzzle-actions button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.lh-fantasy-ui .encounter-main {
+  display: grid;
+  gap: 20px;
+}
+
+.lh-fantasy-ui .fantasy-player-status-bar {
+  margin-bottom: 22px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(10, 18, 30, 0.92), rgba(6, 12, 22, 0.88));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.lh-fantasy-ui .encounter-duel {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-bottom: 4px;
+}
+@media (min-width: 640px) {
+  .lh-fantasy-ui .encounter-duel {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+}
+
+.lh-fantasy-ui .enemy-encounter-panel {
+  padding: 16px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 122, 24, 0.2);
+  background: linear-gradient(165deg, rgba(35, 18, 12, 0.55), rgba(9, 17, 28, 0.92));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 122, 24, 0.06),
+    var(--shadow);
+  display: grid;
+  gap: 12px;
+}
+.lh-fantasy-ui .enemy-encounter-panel__creature {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72px;
+  border-radius: 16px;
+  background: radial-gradient(circle at 50% 30%, rgba(255, 122, 24, 0.12), rgba(0, 0, 0, 0.35));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.lh-fantasy-ui .enemy-encounter-panel__icon {
+  width: 44px;
+  height: 44px;
+  color: color-mix(in srgb, var(--lh-text-primary) 88%, transparent);
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--lh-accent-gold) 25%, transparent));
+}
+.lh-fantasy-ui .enemy-encounter-panel__title {
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--lh-text-primary);
+}
+
+.lh-fantasy-ui .player-battle-vitals {
+  padding: 16px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(58, 134, 255, 0.18);
+  background: linear-gradient(165deg, rgba(12, 22, 42, 0.65), rgba(9, 17, 28, 0.94));
+  box-shadow:
+    inset 0 0 0 1px rgba(58, 134, 255, 0.06),
+    var(--shadow);
+  display: grid;
+  gap: 12px;
+}
+.lh-fantasy-ui .player-battle-vitals__label {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Hunts routes — same token system as Penpot (no Tailwind zinc/amber for key text) */
+.lh-fantasy-ui .lh-hunt-text-primary {
+  color: var(--lh-text-primary);
+}
+.lh-fantasy-ui .lh-hunt-text-muted {
+  color: var(--lh-text-muted);
+}
+.lh-fantasy-ui .lh-hunt-text-accent {
+  color: var(--lh-accent-gold);
+}
+.lh-fantasy-ui a.lh-hunt-link {
+  color: var(--lh-accent-gold);
+  opacity: 0.92;
+}
+.lh-fantasy-ui a.lh-hunt-link:hover {
+  opacity: 1;
+}
+.lh-fantasy-ui .lh-hunt-primary-button {
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--lh-accent-gold) 62%, #2a1f0a),
+    var(--lh-accent-gold)
+  );
+  color: var(--lh-bg-base);
+  box-shadow: 0 10px 15px -3px color-mix(in srgb, var(--lh-accent-gold) 22%, transparent);
+}
+.lh-fantasy-ui .lh-hunt-primary-button:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+.lh-fantasy-ui .lh-hunt-callout {
+  border-color: color-mix(in srgb, var(--lh-accent-gold) 32%, transparent);
+  background: color-mix(in srgb, var(--lh-accent-gold) 9%, var(--lh-bg-base));
+}
+.lh-fantasy-ui .lh-hunt-callout-bar {
+  background: color-mix(in srgb, var(--lh-accent-gold) 58%, transparent);
+}
+.lh-fantasy-ui .lh-hunt-progress-fill {
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--lh-accent-gold) 48%, #3a2208),
+    var(--lh-accent-gold)
+  );
+}
+.lh-fantasy-ui .lh-hunt-hero-glow {
+  background: color-mix(in srgb, var(--lh-accent-gold) 12%, transparent);
+}
+.lh-fantasy-ui .lh-hunt-icon-plate {
+  background: color-mix(in srgb, var(--lh-accent-gold) 15%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--lh-accent-gold) 28%, transparent);
+}
+
+/* Override globals `.lh-panel` (zinc) when inside fantasy shell — token panels */
+.lh-fantasy-ui .lh-panel {
+  border-color: color-mix(in srgb, var(--line) 88%, transparent);
+  background: color-mix(in srgb, var(--panel) 85%, transparent);
+  box-shadow: var(--shadow);
+}
+
+.lh-fantasy-ui .lh-hunt-panel-hero {
+  border-color: color-mix(in srgb, var(--lh-accent-gold) 22%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--panel) 92%, #000),
+    color-mix(in srgb, var(--panel) 96%, #000)
+  );
+}
+
+.lh-fantasy-ui a.lh-hunt-list-row:hover {
+  border-color: color-mix(in srgb, var(--lh-accent-gold) 35%, var(--line));
+  background: color-mix(in srgb, var(--panel-2) 78%, transparent);
+}
+
+.lh-fantasy-ui .lh-hunt-panel-muted {
+  border-color: color-mix(in srgb, var(--line) 92%, transparent);
+}
+
+.lh-fantasy-ui .lh-hunt-progress-track {
+  background: color-mix(in srgb, var(--panel-2) 75%, #000);
+}
+
+.lh-fantasy-ui .lh-hunt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 999px;
+  border-width: 1px;
+  border-style: solid;
+  padding: 0.125rem 0.625rem;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.lh-fantasy-ui .lh-hunt-badge--legendary {
+  border-color: color-mix(in srgb, var(--lh-accent-gold) 45%, transparent);
+  background: color-mix(in srgb, var(--lh-accent-gold) 12%, var(--panel));
+  color: color-mix(in srgb, var(--lh-accent-gold) 92%, #fff);
+}
+
+.lh-fantasy-ui .lh-hunt-badge--trial {
+  border-color: color-mix(in srgb, var(--lh-accent-arcane-blue) 42%, transparent);
+  background: color-mix(in srgb, var(--lh-accent-arcane-blue) 12%, var(--panel));
+  color: color-mix(in srgb, var(--lh-accent-arcane-blue) 88%, #fff);
+}
+
+.lh-fantasy-ui .lh-hunt-badge--hunt {
+  border-color: color-mix(in srgb, var(--success) 38%, transparent);
+  background: color-mix(in srgb, var(--success) 10%, var(--panel));
+  color: color-mix(in srgb, var(--success) 90%, #fff);
+}
+
+.lh-fantasy-ui .lh-hunt-badge-icon {
+  border-radius: 0.75rem;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--panel-2) 90%, #000), var(--panel));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--line) 70%, transparent);
+}

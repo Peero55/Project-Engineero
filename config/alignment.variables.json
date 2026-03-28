@@ -1,0 +1,37 @@
+{
+  "productPositioning": {
+    "primarySurface": "web",
+    "chatRole": "habit_and_quick_study",
+    "mvpScope": ["daily_slack_quiz", "web_hunts_battles", "admin_content", "progression"]
+  },
+  "difficultyModel": {
+    "tiers1to4": "regular_gameplay",
+    "tier5": "lab_depth_only",
+    "tier5NeverRandom": true,
+    "tier5AlwaysChainBased": true
+  },
+  "encounterModel": {
+    "oneLoopMultipleTypes": true,
+    "encounterTypes": ["question", "puzzle_step", "lab_step"],
+    "battlesOperateOnEncounters": true,
+    "puzzlesAreEncounterSteps": true,
+    "labsAreEncounterChains": true,
+    "noSeparatePuzzleLabUIModes": true,
+    "chainFields": ["chain_id", "chain_position", "chain_length"]
+  },
+  "architecture": {
+    "coreEngineThemeAgnostic": true,
+    "webAppPrimaryExperience": true,
+    "integrationsAdapterBased": true,
+    "unifiedEncounterEngine": true
+  },
+  "integrations": {
+    "pattern": "adapter",
+    "supportedPlatforms": ["slack", "discord", "teams"]
+  },
+  "content": {
+    "noHardcodedQuestions": true,
+    "adminReviewRequiredForImports": true,
+    "serverSideAnswerValidationOnly": true
+  }
+}
