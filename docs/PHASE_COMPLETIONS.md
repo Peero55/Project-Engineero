@@ -710,3 +710,36 @@ When a **plan** or **phase** is completed, append a new section below using this
 
 ### Known risks:
 - **CI build** may need env vars or secrets for some packages on GitHub if Next/Slack builds start failing; add repository/environment secrets and document in `docs/deployment.md` if required.
+
+---
+
+## GitHub automation v2 (split CI jobs, pnpm PR template, branch docs) — 2026-03-28
+
+### Phase completed:
+- **CI** workflow split into four jobs (`lint`, `typecheck`, `build`, `test`) with stable names for branch protection; **pnpm** + frozen lockfile everywhere; **test** job runs `pnpm run test` only when root `package.json` defines `scripts.test`, otherwise logs and exits success.
+- **Secret Scan** aligned triggers with `main`/`dev` pushes + PRs; job id **secret-scan** for check naming.
+- **Dependabot** — GitHub Actions updates grouped weekly under `groups.actions`; npm unchanged.
+- **CODEOWNERS** minimal single line `* @Najm557`.
+- **PR template** — pnpm-oriented checklist, no npm commands.
+- **README** — expanded **Required GitHub settings**: `main` vs future `dev`, no approval minimum for now, squash-merge rationale, secret scanning, Dependabot + **auto-merge** documented as GitHub UI (not repo-file enforced).
+
+### Files changed:
+- `.github/workflows/ci.yml`
+- `.github/workflows/secret-scan.yml`
+- `.github/dependabot.yml`
+- `.github/CODEOWNERS`
+- `.github/pull_request_template.md`
+- `README.md`
+- `docs/PHASE_COMPLETIONS.md` (this entry)
+
+### Migrations added:
+- None
+
+### Contracts added/changed:
+- None
+
+### Open questions:
+- Confirm exact **required check** strings in *Settings → Branches* after first run (GitHub prefixes with workflow name).
+
+### Known risks:
+- **Dependabot auto-merge** for patch/minor only is policy + PR triage on GitHub; major bumps may still need manual handling.
