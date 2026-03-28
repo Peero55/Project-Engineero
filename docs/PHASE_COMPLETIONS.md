@@ -743,3 +743,28 @@ When a **plan** or **phase** is completed, append a new section below using this
 
 ### Known risks:
 - **Dependabot auto-merge** for patch/minor only is policy + PR triage on GitHub; major bumps may still need manual handling.
+
+---
+
+## GitHub repo automation (plan alignment) — 2026-03-28
+
+### Phase completed:
+- Aligned repo with **github_repo_automation** plan: **CI** (pnpm, `main`/`dev`, jobs **lint** / **typecheck** / **build** / **test** with safe skip), **Secret Scan** (TruffleHog **v3.90.2**), **Dependabot** (npm + github-actions, weekly, no extra grouping per plan), **CODEOWNERS** comment + `@Najm557`, **PR template** (What/Why/How to test / checklist); **README** **Required GitHub settings** rewritten to match plan §6 (branch protection, checks, reviews per org policy, Dependabot, secret scanning, CODEOWNERS, summary table).
+
+### Files changed:
+- `.github/dependabot.yml` — removed Actions `groups` to match plan
+- `.github/CODEOWNERS` — default-owner comment restored
+- `README.md` — Required GitHub settings per plan wording
+- `docs/PHASE_COMPLETIONS.md` (this entry)
+
+### Migrations added:
+- None
+
+### Contracts added/changed:
+- None
+
+### Open questions:
+- Select exact required check strings in GitHub after next Actions run on `main`.
+
+### Known risks:
+- None beyond existing CI env needs for some builds on fresh runners.

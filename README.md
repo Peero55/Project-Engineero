@@ -28,66 +28,47 @@ Application code (`package.json`, `app/`, etc.) will land in follow-up PRs after
 
 ## Required GitHub settings
 
-Workflows, templates, and [CODEOWNERS](.github/CODEOWNERS) live **in this repository**. Branch protection, security products, Dependabot behavior, and merge preferences are turned on in the **GitHub UI** (repository or organization settings on github.com)—not via local commands.
+*Automation runs on GitHub Actions; use branch protection on GitHub to require those checks before merge.*
 
-### Branch protection: `main` (strict)
+Workflow YAML, [.github/dependabot.yml](.github/dependabot.yml), [CODEOWNERS](.github/CODEOWNERS), and the PR template live **in this repository**. Branch protection rules, required status check selection, secret scanning, and org-level policies are configured on **github.com** (repository or organization settings)—not via local commands.
 
-Configure under **Settings → Branches** with a rule for `main`:
+### Branch protection (`main`, and `dev` if used)
 
-- Require a **pull request** before merging.
-- **Do not** set a required approval count for now (small team); you can add a minimum number of approvals later.
-- **Require status checks to pass** before merging. After Actions have run at least once, select the checks that match this repo’s workflows, for example:
-  - **CI / lint**
-  - **CI / typecheck**
-  - **CI / build**
-  - **CI / test** (safe to require even when the job skips: it succeeds when no root `scripts.test` exists)
-  - **Secret Scan / secret-scan**
-- **Do not allow force pushes** to `main`.
-- **Do not allow deletions** of `main`.
+Under **Settings → Branches → Branch protection rules**:
 
-Set the **default merge method** for the repo to **Squash and merge** (recommended for early growth):
+- Require a **pull request** before merge.
+- **Disallow force pushes** and **disallow branch deletion** for protected branches (recommended for `main`).
+- Optionally require branches to be **up to date** before merge.
 
-- **Cleaner history** — one commit per merged PR instead of merge commits and noisy branch tips.
-- **Easier review and rollback** — one logical change unit maps to one revert.
-- **Better fit for a small, fast-moving team** — less time spent curating merge bubbles.
+Add a **separate, looser** rule for **`dev`** when that branch exists (fewer required checks or lighter rules than `main`).
 
-Individual PRs can still use other merge methods if org policy allows, but squash should be the norm.
+### Required status checks
 
-### Branch protection: `dev` (looser, when the branch exists)
+In the branch rule, enable **Require status checks to pass before merging** and select the check names that correspond to the **CI** and **Secret Scan** workflows. Exact labels appear under the **Actions** tab after workflows have run at least once (they may look like **`lint`**, **`CI / lint`**, **`secret-scan`**, **`Secret Scan / secret-scan`**, etc.—pick what matches your jobs).
 
-When you add a `dev` branch, create a **separate** rule that is **looser** than `main`:
+### Reviews
 
-- Still use PRs (and optionally required checks) if you want basic hygiene.
-- Avoid mirroring every strict `main` rule until the team needs them—`dev` is for integration before promotion to `main`.
+Use **Require a pull request before merging** and follow your **organization’s policy** for whether **required approvals** are turned on and how many.
 
-### Secret scanning and push protection
+### Dependabot and security
 
-Under **Settings → Code security and analysis** (names vary slightly by plan):
+Under **Settings → Code security** (or equivalent):
 
-- Enable **Secret scanning** for the repository.
-- Enable **Push protection** for supported secret types when your plan includes it, so pushes blocked at the remote fail fast.
+- Enable **Dependabot alerts** and **Dependabot security updates**; review and merge Dependabot PRs on GitHub.
 
-### Dependabot
+### Secret scanning
 
-- Turn on **Dependabot alerts** and **Dependabot security updates** for the repo.
-- The config file is [.github/dependabot.yml](.github/dependabot.yml) (npm + GitHub Actions; Actions updates are grouped into one weekly PR).
-
-**Auto-merge for patch and minor updates:** GitHub does not encode “auto-merge only Dependabot patch/minor” entirely in `dependabot.yml`. After CI is stable:
-
-1. Enable **Allow auto-merge** at **Settings → General**.
-2. For Dependabot PRs that only bump patch/minor (and pass required checks), use **Enable auto-merge** on the PR (squash, if that is your default) so merges happen once checks are green.
-
-Larger upgrades (major, or risky batches) should stay manual until you trust automation.
+Enable **secret scanning** for the repository and, if your plan includes it, **push protection** for supported secrets.
 
 ### CODEOWNERS
 
-[`.github/CODEOWNERS`](.github/CODEOWNERS) lists **@Najm557** as the default owner for all paths. You can later enable **Require review from Code Owners** in branch rules if you want reviews routed automatically; that remains optional for now.
+With [.github/CODEOWNERS](.github/CODEOWNERS) on the default branch, GitHub can request reviews from the listed owners or teams when you enable review-from-codeowners rules (optional).
 
 ### Summary
 
-| Location | What |
-|----------|------|
-| **In the repo** | Workflow YAML, Dependabot YAML, PR template, CODEOWNERS |
-| **On GitHub (UI)** | Branch protection, required checks selection, secret scanning, Dependabot alerts, allow auto-merge, default to squash merge |
+| Where | What |
+|--------|------|
+| **Repo files** | [`.github/workflows/*.yml`](.github/workflows/ci.yml), Dependabot, CODEOWNERS, PR template |
+| **GitHub UI** | Branch protection, required checks, secret scanning, Dependabot toggles, merge defaults |
 
-You can edit workflow files on GitHub (**Add file** / **Edit** → commit to a branch → PR) so the remote repository stays the source of truth.
+You can add or edit workflow files on GitHub (**Add file** / **Edit** → branch → PR) so the hosted repository remains the source of truth.
