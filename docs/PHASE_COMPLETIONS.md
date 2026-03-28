@@ -677,3 +677,36 @@ When a **plan** or **phase** is completed, append a new section below using this
 
 ### Known risks:
 - Editing historical migration files can confuse environments that already applied older versions of those files; new clones and the fixed remote benefit from the guards.
+
+---
+
+## GitHub repo automation (CI, Dependabot, CODEOWNERS) — 2026-03-28
+
+### Phase completed:
+- Added **GitHub Actions** workflows: **CI** (Node 22, pnpm 10 frozen lockfile, Turbo `lint` / `typecheck` / `test` / `build` with `--if-present`) on `pull_request` and `push` to `main` and `dev`; **Secret Scan** (TruffleHog `v3.90.2`).
+- Added **Dependabot** for npm and github-actions (weekly, PR limit 5).
+- Added **CODEOWNERS** default owner `@Najm557` (team can replace with `@org/team`).
+- Replaced **pull request template** with What/Why/How to test/Checklist (npm wording per spec).
+- Extended **README** with **Required GitHub settings** (branch protection, required checks, Dependabot, secret scanning, CODEOWNERS note, GitHub-first editing).
+
+### Files changed:
+- `.github/workflows/ci.yml` (new)
+- `.github/workflows/secret-scan.yml` (new)
+- `.github/dependabot.yml` (new)
+- `.github/CODEOWNERS` (new)
+- `.github/pull_request_template.md` (replaced)
+- `README.md` — Required GitHub settings section
+- `docs/PHASE_COMPLETIONS.md` (this entry)
+
+### Migrations added:
+- None
+
+### Contracts added/changed:
+- None
+
+### Open questions:
+- Turn on **required status checks** in GitHub *Settings → Branches* after first successful Actions runs so check names are visible.
+- Replace `CODEOWNERS` `*` entry with org team when available.
+
+### Known risks:
+- **CI build** may need env vars or secrets for some packages on GitHub if Next/Slack builds start failing; add repository/environment secrets and document in `docs/deployment.md` if required.
