@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cinzel, DM_Sans } from "next/font/google";
 import "./globals.css";
 import "@/styles/fantasy-ui.css";
+import "@/styles/title-screen.css";
 import { Providers } from "./providers";
 
 const dmSans = DM_Sans({

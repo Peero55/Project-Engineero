@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Schema guardrail",
+  "description": "When editing schema or migration-related files, summarize migration impact, content/seed impact, rollback risk, and app code dependencies before finalizing.",
+  "version": "1",
+  "when": {
+    "type": "preToolUse",
+    "toolTypes": [
+      "write"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "You are editing schema or migration-related files.\n\nBefore finalizing:\n- summarize migration impact\n- summarize content/seed impact\n- summarize rollback risk\n- identify whether any app code depends on this schema\n\nDo not make destructive schema changes silently."
+  }
+}

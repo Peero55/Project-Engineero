@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Pre-edit architecture check",
+  "description": "Before making changes, summarize which layer is being edited, whether it affects apps/web, apps/slack, packages/*, supabase, or docs, and whether the change crosses architecture boundaries.",
+  "version": "1",
+  "when": {
+    "type": "preToolUse",
+    "toolTypes": [
+      "write"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Before making changes, summarize:\n- which layer is being edited\n- whether it affects apps/web, apps/slack, packages/*, supabase, or docs\n- whether the change crosses architecture boundaries\n\nIf the change crosses boundaries, explain why it is justified. Keep the summary short and specific."
+  }
+}

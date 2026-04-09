@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Battle UI guardrail",
+  "description": "When editing battle-related web UI, verify presentation logic stays in React/Next.js, Supabase isn't given styling responsibility, asset usage is semantic-key-driven, and UI stays game-like.",
+  "version": "1",
+  "when": {
+    "type": "preToolUse",
+    "toolTypes": [
+      "write"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "You are editing battle-related web UI.\n\nVerify:\n- presentation logic remains in React/Next.js\n- Supabase is not being given styling responsibility\n- asset usage remains semantic-key-driven\n- the UI stays game-like and readable\n\nIf the change weakens those rules, say so before finalizing."
+  }
+}

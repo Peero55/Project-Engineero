@@ -79,5 +79,18 @@ temp/
 *.temp
 .wrangler/
 
+# Archived / obsolete files
+obsolete/
+
 # Debug
 *.pem
+
+# Nova Act SDK
+nova-act/.venv/
+nova-act/__pycache__/
+
+# Python virtual environments
+scripts/.venv/
+
+# Unity projects (editor cache, library, etc.)
+Setup Guide In-Editor Tutorial/

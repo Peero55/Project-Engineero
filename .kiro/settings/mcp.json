@@ -1,0 +1,43 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "get_file_contents",
+        "search_repositories",
+        "create_repository"
+      ]
+    },
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "${DATABASE_URL}"
+      ],
+      "disabled": true,
+      "autoApprove": []
+    },
+    "nova-canvas": {
+      "command": "uvx",
+      "args": ["awslabs.nova-canvas-mcp-server@latest"],
+      "env": {
+        "AWS_PROFILE": "ppryor14",
+        "AWS_REGION": "us-east-1"
+      },
+      "disabled": true,
+      "autoApprove": []
+    },
+    "unity-mcp": {
+      "command": "/Users/ppryor/.unity/relay/relay_mac_arm64.app/Contents/MacOS/relay_mac_arm64",
+      "args": ["--mcp"],
+      "disabled": false,
+      "autoApprove": ["Unity_GetUserGuidelines", "Unity_GetConsoleLogs"]
+    }
+  }
+}

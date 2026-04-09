@@ -1,9 +1,11 @@
 import { config } from "dotenv";
 import path from "node:path";
 
-// Load .env.local from monorepo root; cwd may be apps/slack or project root
+// Load env files: prefer .env.local, fall back to .env, check both cwd and monorepo root
 config({ path: path.resolve(process.cwd(), ".env.local"), override: true });
 config({ path: path.resolve(process.cwd(), "../../.env.local"), override: false });
+config({ path: path.resolve(process.cwd(), ".env"), override: false });
+config({ path: path.resolve(process.cwd(), "../../.env"), override: false });
 
 import { app, receiver } from "./app.js";
 

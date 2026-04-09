@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Docs sync",
+  "description": "If a change affects architecture, setup, workflow, schema, or user-facing behavior, update the nearest relevant docs file or create a follow-up docs task.",
+  "version": "1",
+  "when": {
+    "type": "postToolUse",
+    "toolTypes": [
+      "write"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "If the change affects architecture, setup, workflow, schema, or user-facing behavior:\n- update the nearest relevant docs file\n- or create a follow-up docs task if immediate update would be risky\n\nPrefer refining existing docs over creating duplicates."
+  }
+}

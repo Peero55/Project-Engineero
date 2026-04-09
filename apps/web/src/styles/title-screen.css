@@ -1,0 +1,205 @@
+/**
+ * Title screen / landing page styles.
+ * Scoped via .lh-fantasy-ui parent — uses the same token system as battle UI.
+ */
+
+/* ── Atmospheric background ─────────────────────────────────────── */
+
+.lh-title-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(
+      ellipse 100% 60% at 50% 20%,
+      rgba(242, 201, 76, 0.06),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 80% 50% at 20% 80%,
+      rgba(58, 134, 255, 0.05),
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 90% 70% at 80% 60%,
+      rgba(255, 122, 24, 0.04),
+      transparent 55%
+    ),
+    radial-gradient(circle at 50% 50%, #0a1628 0%, #040911 100%);
+}
+
+.lh-title-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(
+    ellipse 70% 60% at 50% 50%,
+    transparent 30%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  pointer-events: none;
+}
+
+/* Subtle floating particle dots */
+.lh-title-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 15% 25%, rgba(242, 201, 76, 0.4), transparent),
+    radial-gradient(1px 1px at 75% 15%, rgba(242, 201, 76, 0.3), transparent),
+    radial-gradient(
+      1.5px 1.5px at 45% 70%,
+      rgba(58, 134, 255, 0.35),
+      transparent
+    ),
+    radial-gradient(1px 1px at 85% 55%, rgba(255, 122, 24, 0.3), transparent),
+    radial-gradient(1px 1px at 25% 85%, rgba(242, 201, 76, 0.25), transparent),
+    radial-gradient(
+      1.5px 1.5px at 60% 40%,
+      rgba(58, 134, 255, 0.2),
+      transparent
+    ),
+    radial-gradient(1px 1px at 10% 60%, rgba(255, 122, 24, 0.25), transparent),
+    radial-gradient(1px 1px at 90% 80%, rgba(242, 201, 76, 0.3), transparent);
+  animation: lh-title-drift 12s ease-in-out infinite alternate;
+}
+
+@keyframes lh-title-drift {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-12px) scale(1.02);
+    opacity: 1;
+  }
+}
+
+/* ── Crest glow pulse ───────────────────────────────────────────── */
+
+.lh-title-crest-glow::before {
+  content: "";
+  position: absolute;
+  inset: -24px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(242, 201, 76, 0.12) 0%,
+    transparent 70%
+  );
+  animation: lh-crest-pulse 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes lh-crest-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+/* ── Subtitle ───────────────────────────────────────────────────── */
+
+.lh-title-subtitle {
+  color: var(--lh-accent-gold);
+  text-shadow: 0 0 20px rgba(242, 201, 76, 0.3);
+}
+
+/* ── Buttons ────────────────────────────────────────────────────── */
+
+.lh-title-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  border-radius: 1rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.25s ease,
+    filter 0.2s ease;
+  text-decoration: none;
+}
+
+.lh-title-btn:hover {
+  transform: translateY(-2px);
+}
+
+.lh-title-btn:active {
+  transform: scale(0.97);
+}
+
+.lh-title-btn--primary {
+  color: var(--lh-bg-base);
+  background: linear-gradient(135deg, #d4a017, var(--lh-accent-gold), #f7dc6f);
+  border: 1px solid rgba(242, 201, 76, 0.6);
+  box-shadow:
+    0 0 20px rgba(242, 201, 76, 0.2),
+    0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.lh-title-btn--primary:hover {
+  box-shadow:
+    0 0 32px rgba(242, 201, 76, 0.35),
+    0 12px 32px rgba(0, 0, 0, 0.5);
+  filter: brightness(1.08);
+}
+
+.lh-title-btn--secondary {
+  color: var(--lh-text-primary);
+  background: linear-gradient(
+    180deg,
+    rgba(26, 42, 63, 0.9),
+    rgba(15, 24, 37, 0.9)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.lh-title-btn--secondary:hover {
+  border-color: rgba(242, 201, 76, 0.3);
+  box-shadow:
+    inset 0 0 16px rgba(242, 201, 76, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Feature callout ────────────────────────────────────────────── */
+
+.lh-title-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.125rem 1.25rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(242, 201, 76, 0.12);
+  background: linear-gradient(
+    180deg,
+    rgba(13, 24, 38, 0.8),
+    rgba(9, 17, 28, 0.85)
+  );
+  box-shadow:
+    inset 0 0 24px rgba(58, 134, 255, 0.04),
+    0 18px 40px rgba(0, 0, 0, 0.3);
+}
+
+.lh-title-callout-icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  background: rgba(242, 201, 76, 0.1);
+  border: 1px solid rgba(242, 201, 76, 0.2);
+  color: var(--lh-accent-gold);
+}

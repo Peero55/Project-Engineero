@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Post-edit change report",
+  "description": "After edits, always return changed files, why they changed, likely risks, and what should be tested next.",
+  "version": "1",
+  "when": {
+    "type": "postToolUse",
+    "toolTypes": [
+      "write"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "After edits, always return:\n- changed files\n- why they changed\n- likely risks\n- what should be tested next\n\nIf any route, shared package API, migration, env variable, or external integration changed, call it out explicitly."
+  }
+}

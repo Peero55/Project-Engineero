@@ -11,13 +11,15 @@
     "env:check": "tsx scripts/validate-env.ts",
     "db:push": "npx supabase db push",
     "slack:create-app": "tsx scripts/slack-create-app.ts",
-    "slack:init": "cd apps/slack && slack init"
+    "slack:init": "cd apps/slack && slack init",
+    "test": "vitest --run"
   },
   "devDependencies": {
     "dotenv": "^17.3.1",
     "prettier": "^3.6.0",
     "tsx": "^4.20.0",
     "turbo": "^2.5.0",
-    "typescript": "^5.9.0"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.2"
   }
 }

@@ -1,0 +1,12 @@
+export { SceneCompositor } from "./SceneCompositor";
+export type { SceneCompositorProps, EffectDescriptor } from "./SceneCompositor";
+export { Background } from "./Background";
+export type { BackgroundProps } from "./Background";
+export { Midground } from "./Midground";
+export type { MidgroundProps } from "./Midground";
+export { CharacterStage } from "./CharacterStage";
+export type { CharacterStageProps } from "./CharacterStage";
+export { FXLayer } from "./FXLayer";
+export type { FXLayerProps } from "./FXLayer";
+export { UIOverlay } from "./UIOverlay";
+export type { UIOverlayProps } from "./UIOverlay";

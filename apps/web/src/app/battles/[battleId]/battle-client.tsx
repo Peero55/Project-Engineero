@@ -7,16 +7,22 @@ import type {
   BattlePlayerView,
   BattleSessionView,
 } from "@legendary-hunts/core";
-import { ATTACK_BY_TIER, GAME_CONFIG, xpForLevel } from "@legendary-hunts/config";
+import { GAME_CONFIG, xpForLevel } from "@legendary-hunts/config";
 import { PlayerInfoBar } from "@/components/fantasy/layout/PlayerInfoBar";
 import { Panel } from "@/components/fantasy/ui/Panel";
-import { StoneButton, type StoneButtonType } from "@/components/fantasy/ui/Button";
+import {
+  StoneButton,
+  type StoneButtonType,
+} from "@/components/fantasy/ui/Button";
 import { AttackBar } from "@/components/fantasy/game/AttackBar";
 import { EncounterScreen } from "@/components/fantasy/game/EncounterScreen";
 import { EnemyEncounterPanel } from "@/components/fantasy/game/EnemyEncounterPanel";
 import { PlayerBattleVitals } from "@/components/fantasy/game/PlayerBattleVitals";
 import { QuestionPanel } from "@/components/fantasy/game/QuestionPanel";
-import { Feedback, FeedbackLayer } from "@/components/fantasy/game/FeedbackLayer";
+import {
+  Feedback,
+  FeedbackLayer,
+} from "@/components/fantasy/game/FeedbackLayer";
 
 const STONE_ORDER: StoneButtonType[] = ["light", "medium", "heavy", "ultimate"];
 
@@ -47,12 +53,6 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-function lockedStrikesForTier(tier: number | undefined): StoneButtonType[] {
-  if (tier === undefined || tier < 1 || tier > 4) return [...STONE_ORDER];
-  const allowed = ATTACK_BY_TIER[tier as 1 | 2 | 3 | 4];
-  return STONE_ORDER.filter((s) => s !== allowed);
-}
-
 function formatBattleTypeLabel(t: string): string {
   return t.replace(/_/g, " ");
 }
@@ -78,10 +78,14 @@ export function BattleClient({
   const [puzzleOrder, setPuzzleOrder] = useState<string[]>([]);
   const [now, setNow] = useState(() => Date.now());
   const [feedback, setFeedback] = useState<StrikeFeedback | null>(null);
-  const [questionFlash, setQuestionFlash] = useState<"correct" | "incorrect" | null>(null);
+  const [questionFlash, setQuestionFlash] = useState<
+    "correct" | "incorrect" | null
+  >(null);
   const [enemyHpFlash, setEnemyHpFlash] = useState<"hit" | null>(null);
   const [playerHpFlash, setPlayerHpFlash] = useState<"damage" | null>(null);
   const [xpBarFlash, setXpBarFlash] = useState<"gain" | null>(null);
+  /** Difficulty-first flow: user picks a tier before the question is revealed */
+  const [chosenTier, setChosenTier] = useState<StoneButtonType | null>(null);
 
   const session = view.session;
   const active = view.activeEncounter;
@@ -119,7 +123,8 @@ export function BattleClient({
     }
     if (feedback.damageDealt > 0 && feedback.correct) setEnemyHpFlash("hit");
     if (feedback.damageTaken > 0) setPlayerHpFlash("damage");
-    if (feedback.xpGained != null && feedback.xpGained > 0) setXpBarFlash("gain");
+    if (feedback.xpGained != null && feedback.xpGained > 0)
+      setXpBarFlash("gain");
     const t = setTimeout(() => {
       setEnemyHpFlash(null);
       setPlayerHpFlash(null);
@@ -149,12 +154,13 @@ export function BattleClient({
 
   const refresh = useCallback(async () => {
     const res = await fetch(
-      `/api/battle/${battleId}?slackUserId=${encodeURIComponent(slackUserId)}`
+      `/api/battle/${battleId}?slackUserId=${encodeURIComponent(slackUserId)}`,
     );
     if (!res.ok) return;
     const data = (await res.json()) as View;
     setView(data);
     setPickedOptionId(null);
+    setChosenTier(null);
   }, [battleId, slackUserId]);
 
   const postAnswer = async (body: Record<string, unknown>) => {
@@ -200,7 +206,10 @@ export function BattleClient({
           topicSlug: active?.topicSlug,
           domainSlug: active?.domainSlug,
         });
-        if (body.encounterId === active?.id && active?.encounterType === "question") {
+        if (
+          body.encounterId === active?.id &&
+          active?.encounterType === "question"
+        ) {
           setQuestionFlash(json.correct ? "correct" : "incorrect");
         }
       }
@@ -212,8 +221,11 @@ export function BattleClient({
   };
 
   const submitQuestion = async () => {
-    if (!active || active.encounterType !== "question" || !active.question) return;
-    const started = active.startedAt ? new Date(active.startedAt).getTime() : now;
+    if (!active || active.encounterType !== "question" || !active.question)
+      return;
+    const started = active.startedAt
+      ? new Date(active.startedAt).getTime()
+      : now;
     const responseMs = Math.max(0, now - started);
     if (!pickedOptionId) return;
     await postAnswer({
@@ -226,20 +238,24 @@ export function BattleClient({
 
   const onStrike = (tier: StoneButtonType) => {
     if (!active || active.encounterType !== "question") return;
+    // Difficulty-first: if no tier chosen yet, this is the difficulty selection step
+    if (!chosenTier) {
+      setChosenTier(tier);
+      return;
+    }
+    // Tier already chosen — submit the answer
     if (!pickedOptionId) {
       setError("Choose an answer first.");
       return;
     }
-    const t = active.difficultyTier;
-    if (t === undefined || t < 1 || t > 4) return;
-    const expected = ATTACK_BY_TIER[t as 1 | 2 | 3 | 4];
-    if (tier !== expected) return;
     void submitQuestion();
   };
 
   const submitPuzzle = async () => {
     if (!active || active.encounterType !== "puzzle_step") return;
-    const started = active.startedAt ? new Date(active.startedAt).getTime() : now;
+    const started = active.startedAt
+      ? new Date(active.startedAt).getTime()
+      : now;
     const responseMs = Math.max(0, now - started);
     await postAnswer({
       encounterId: active.id,
@@ -283,7 +299,9 @@ export function BattleClient({
   const maxPlayer = GAME_CONFIG.maxPlayerHp;
   const maxFoe = GAME_CONFIG.maxEnemyHp;
 
-  const strikeLocked = active ? lockedStrikesForTier(active.difficultyTier) : [...STONE_ORDER];
+  const strikeLocked: StoneButtonType[] = chosenTier
+    ? STONE_ORDER.filter((s) => s !== chosenTier)
+    : [];
 
   const slackQ = `slack_user_id=${encodeURIComponent(slackUserId)}`;
 
@@ -293,7 +311,11 @@ export function BattleClient({
 
   if (session.status === "won" || session.status === "lost") {
     return (
-      <Panel variant="battle" title={session.status === "won" ? "Victory" : "Defeat"} glow>
+      <Panel
+        variant="battle"
+        title={session.status === "won" ? "Victory" : "Defeat"}
+        glow
+      >
         <p className="muted" style={{ margin: 0 }}>
           {session.status === "won"
             ? "You cleared this battle."
@@ -308,7 +330,11 @@ export function BattleClient({
 
   if (session.status === "paused" || session.pausedAt) {
     return (
-      <Panel variant="dashboard" title="Paused" subtitle="No time limit while you step away">
+      <Panel
+        variant="dashboard"
+        title="Paused"
+        subtitle="No time limit while you step away"
+      >
         <p className="muted">Take your time; the encounter waits.</p>
         <StoneButton
           type="medium"
@@ -326,7 +352,11 @@ export function BattleClient({
     return (
       <p className="muted">
         No active encounter.{" "}
-        <button type="button" className="underline" onClick={() => void refresh()}>
+        <button
+          type="button"
+          className="underline"
+          onClick={() => void refresh()}
+        >
           Refresh
         </button>
       </p>
@@ -334,9 +364,9 @@ export function BattleClient({
   }
 
   const questionHint =
-    active.encounterType === "question" && !pickedOptionId ? (
+    active.encounterType === "question" && chosenTier && !pickedOptionId ? (
       <p className="muted" style={{ marginTop: 14, fontSize: "0.85rem" }}>
-        Choose an answer, then strike with the matching tier.
+        Choose an answer, then confirm your strike.
       </p>
     ) : null;
 
@@ -376,13 +406,33 @@ export function BattleClient({
         active.encounterType === "question" ? (
           <div className="action-bar-wrap">
             <p className="action-bar-wrap__label muted">
-              Strike — ties difficulty to your swing (answer required first)
+              {!chosenTier
+                ? "Choose your challenge — pick a difficulty tier"
+                : `${chosenTier.charAt(0).toUpperCase() + chosenTier.slice(1)} strike selected — answer the question below`}
             </p>
-            <AttackBar locked={strikeLocked} onSelect={(t) => onStrike(t)} />
+            {!chosenTier ? (
+              <AttackBar locked={strikeLocked} onSelect={(t) => onStrike(t)} />
+            ) : (
+              <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                <StoneButton type={chosenTier} disabled className="flex-1">
+                  {chosenTier.charAt(0).toUpperCase() + chosenTier.slice(1)}
+                </StoneButton>
+                <StoneButton
+                  type="medium"
+                  disabled={loading || !pickedOptionId}
+                  onClick={() => void submitQuestion()}
+                  className="flex-1"
+                >
+                  Confirm Strike
+                </StoneButton>
+              </div>
+            )}
           </div>
         ) : (
           <div className="action-bar-wrap">
-            <p className="action-bar-wrap__label muted">Riddle step — reorder, then submit above.</p>
+            <p className="action-bar-wrap__label muted">
+              Riddle step — reorder, then submit above.
+            </p>
             <AttackBar locked={[...STONE_ORDER]} />
           </div>
         )
@@ -400,10 +450,16 @@ export function BattleClient({
             />
           ) : null}
           {feedback && !feedback.correct ? (
-            <Feedback type="failure" value={feedback.timedOut ? "Time slipped away" : "Glancing miss"} />
+            <Feedback
+              type="failure"
+              value={feedback.timedOut ? "Time slipped away" : "Glancing miss"}
+            />
           ) : null}
           {feedback && feedback.damageTaken > 0 ? (
-            <Feedback type="damage" value={`−${feedback.damageTaken} resilience`} />
+            <Feedback
+              type="damage"
+              value={`−${feedback.damageTaken} resilience`}
+            />
           ) : null}
           {feedback && feedback.xpGained != null && feedback.xpGained > 0 ? (
             <Feedback type="xp" value={`+${feedback.xpGained} progression`} />
@@ -413,7 +469,10 @@ export function BattleClient({
               {feedback.explanation.slice(0, 320)}
             </div>
           ) : null}
-          {feedback && !feedback.correct && feedback.topicSlug && feedback.domainSlug ? (
+          {feedback &&
+          !feedback.correct &&
+          feedback.topicSlug &&
+          feedback.domainSlug ? (
             <Link
               href={`/explanations/${feedback.domainSlug}/${feedback.topicSlug}?${slackQ}`}
               className="fantasy-stone-link"
@@ -421,7 +480,10 @@ export function BattleClient({
               Open study page
             </Link>
           ) : null}
-          {feedback && !feedback.correct && feedback.topicSlug && !feedback.domainSlug ? (
+          {feedback &&
+          !feedback.correct &&
+          feedback.topicSlug &&
+          !feedback.domainSlug ? (
             <Link href={`/codex?${slackQ}`} className="fantasy-stone-link">
               Browse codex
             </Link>
@@ -448,7 +510,10 @@ export function BattleClient({
           disabled={loading}
           onClick={() => void doPause()}
         >
-          <span className="muted" style={{ textDecoration: "underline", cursor: "pointer" }}>
+          <span
+            className="muted"
+            style={{ textDecoration: "underline", cursor: "pointer" }}
+          >
             Pause
           </span>
         </button>
@@ -468,7 +533,29 @@ export function BattleClient({
         </div>
       ) : null}
 
-      {active.encounterType === "question" && active.question && (
+      {active.encounterType === "question" &&
+        active.question &&
+        !chosenTier && (
+          <div
+            className="question-card"
+            style={{ textAlign: "center", padding: "2rem 1.5rem" }}
+          >
+            <p
+              style={{
+                color: "var(--lh-accent-gold)",
+                fontWeight: 700,
+                fontSize: "1.1rem",
+              }}
+            >
+              Choose your difficulty
+            </p>
+            <p className="muted" style={{ marginTop: 8, fontSize: "0.88rem" }}>
+              Pick a tier below to reveal the encounter question.
+            </p>
+          </div>
+        )}
+
+      {active.encounterType === "question" && active.question && chosenTier && (
         <QuestionPanel
           flash={questionFlash}
           prompt={active.question.prompt}
@@ -489,17 +576,31 @@ export function BattleClient({
           <p className="muted" style={{ fontSize: "0.88rem" }}>
             Put layers in order (1 = Physical … 7 = Application).
           </p>
-          <ol style={{ listStyle: "none", padding: 0, margin: "12px 0 0", display: "grid", gap: 8 }}>
+          <ol
+            style={{
+              listStyle: "none",
+              padding: 0,
+              margin: "12px 0 0",
+              display: "grid",
+              gap: 8,
+            }}
+          >
             {puzzleOrder.map((key, i) => (
               <li key={`${key}-${i}`} className="fantasy-puzzle-row">
-                <span>
-                  {key}. {labels[key] ?? key}
-                </span>
+                <span>{labels[key] ?? key}</span>
                 <span className="fantasy-puzzle-actions">
-                  <button type="button" disabled={loading} onClick={() => movePuzzle(i, -1)}>
+                  <button
+                    type="button"
+                    disabled={loading}
+                    onClick={() => movePuzzle(i, -1)}
+                  >
                     Up
                   </button>
-                  <button type="button" disabled={loading} onClick={() => movePuzzle(i, 1)}>
+                  <button
+                    type="button"
+                    disabled={loading}
+                    onClick={() => movePuzzle(i, 1)}
+                  >
                     Down
                   </button>
                 </span>

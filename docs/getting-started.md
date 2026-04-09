@@ -1,92 +1,155 @@
-# Getting started
+# Getting Started
 
-Welcome to **Engineero**. This guide helps you clone the project, install dependencies, and run it locally. Exact commands may evolve as the Next.js app layout and package manager are finalized — placeholders below are realistic; update this doc when tooling is locked in.
-
-## Project overview
-
-Engineero is a team project using:
-
-- **Next.js** — web application and frontend concerns
-- **Node.js** — server/runtime for API routes, server logic, and tooling
-- **PostgreSQL** — durable data, metadata, and asset references (not UI rendering)
-
-New contributors should read this page, then **`docs/code-standards.md`**, then **`CONTRIBUTING.md`**.
+Welcome to **Engineero** — a Slack-first gamified learning platform with a Next.js web companion. This guide takes you from a fresh clone to a fully running local environment.
 
 ## Prerequisites
 
-- **Node.js** — LTS version recommended (exact version TBD; consider pinning via `.nvmrc` or `engines` when adopted)
-- **Package manager** — npm, pnpm, or yarn (team choice TBD)
-- **PostgreSQL** — local install or Docker (connection details in `.env`; see `.env.example`)
-- **Git** — for branching and pull requests
+Install the following before you begin:
 
-## Clone and setup
+| Tool                                                 | Minimum Version | Check                |
+| ---------------------------------------------------- | --------------- | -------------------- |
+| [Node.js](https://nodejs.org/)                       | 18+             | `node -v`            |
+| [pnpm](https://pnpm.io/)                             | 10+             | `pnpm -v`            |
+| [Docker](https://www.docker.com/)                    | Latest stable   | `docker info`        |
+| [Supabase CLI](https://supabase.com/docs/guides/cli) | Latest          | `supabase --version` |
+
+Docker must be running before you start Supabase local.
+
+## 1. Clone the repository
 
 ```bash
 git clone https://github.com/<org-or-user>/Engineero.git
 cd Engineero
 ```
 
-Create a working branch (do not work directly on `main`):
+## 2. Install dependencies
 
 ```bash
-git checkout main
-git pull origin main
-git checkout -b feat/your-branch-name
+pnpm install
 ```
 
-## Install dependencies
+This installs all packages across the monorepo (web app, Slack app, and shared packages).
 
-**Placeholder** — replace with the team’s package manager when `package.json` exists:
+## 3. Start Supabase local
 
 ```bash
-# npm
-# npm install
-
-# pnpm
-# pnpm install
-
-# yarn
-# yarn install
+supabase start
 ```
 
-## Environment variables
+This launches a local Supabase stack via Docker (PostgreSQL, Auth, Studio, etc.). On first run it pulls container images, which may take a few minutes.
 
-1. Copy `.env.example` to your local env file (convention TBD; many Next.js teams use `.env.local`).
-2. Set `DATABASE_URL` and other variables to match your local PostgreSQL and app URL.
-3. Never commit secrets. `.env.example` stays template-only.
+When it finishes, the CLI prints local credentials:
 
-See `.env.example` for commented placeholders.
+```
+         API URL: http://localhost:54321
+     GraphQL URL: http://localhost:54321/graphql/v1
+  S3 Storage URL: http://localhost:54321/storage/v1/s3
+          DB URL: postgresql://postgres:postgres@localhost:54322/postgres
+      Studio URL: http://localhost:54323
+    Inbucket URL: http://localhost:54324
+      JWT secret: super-secret-jwt-token-with-at-least-32-characters-long
+        anon key: eyJhbG...  <-- copy this
+service_role key: eyJhbG...  <-- copy this
+```
 
-## Run the app locally
+You need the **API URL**, **anon key**, and **service_role key** for the next step.
 
-**Placeholder** — typical Next.js dev command after the app is scaffolded:
+## 4. Configure environment variables
 
 ```bash
-# npm run dev
-# pnpm dev
-# yarn dev
+cp .env.example .env.local
 ```
 
-The app will likely be available at `http://localhost:3000` unless `API_PORT` / custom ports are configured.
+Open `.env.local` and fill in the Supabase values from the `supabase start` output:
 
-## Database
+```dotenv
+NEXT_PUBLIC_SUPABASE_URL=http://localhost:54321
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon key from supabase start>
+SUPABASE_SERVICE_ROLE_KEY=<service_role key from supabase start>
+```
 
-**Placeholder** — when migrations exist, document how to create the database and apply them (e.g. `npm run db:migrate`). Until then:
+For Slack integration, you also need three tokens — see [Slack App Setup](#5-set-up-slack-app) below.
 
-- Ensure PostgreSQL is running and `DATABASE_URL` is valid.
-- Coordinate with the team before applying schema changes to shared environments.
+## 5. Set up Slack app
 
-## What to read first
+Follow the instructions in **[docs/SLACK_SETUP.md](./SLACK_SETUP.md)** to create a Slack app and obtain the required tokens. You will need:
 
-1. **`CONTRIBUTING.md`** — branching, PRs, and review expectations
-2. **`docs/code-standards.md`** — how we organize code and responsibilities
-3. **`docs/deployment.md`** — environments and release notes (placeholder until deploy is wired)
-4. **`.github/copilot-instructions.md`** — guidance for AI-assisted contributions
+| Variable               | Where to find                                                                       |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| `SLACK_BOT_TOKEN`      | OAuth & Permissions → Bot User OAuth Token (`xoxb-...`)                             |
+| `SLACK_SIGNING_SECRET` | Basic Information → App Credentials                                                 |
+| `SLACK_APP_TOKEN`      | Basic Information → App-Level Tokens → create with `connections:write` (`xapp-...`) |
+
+Add all three to your `.env.local`:
+
+```dotenv
+SLACK_BOT_TOKEN=xoxb-your-bot-token
+SLACK_SIGNING_SECRET=your-signing-secret
+SLACK_APP_TOKEN=xapp-your-app-level-token
+```
+
+These are **required** — the Slack app validates them on startup and will fail without them.
+
+## 6. Apply database migrations and seed data
+
+```bash
+supabase db reset
+```
+
+This drops and recreates the local database, applies all migrations, and loads seed data (certifications, domains, topics, questions, and hunts).
+
+## 7. Start the dev servers
+
+```bash
+pnpm dev
+```
+
+This starts both the web app and the Slack app via Turborepo:
+
+- **Web app**: [http://localhost:3000](http://localhost:3000)
+- **Slack app**: connects via Socket Mode
+
+## Verification
+
+Run these commands to confirm everything is healthy:
+
+```bash
+pnpm typecheck   # Type-check all packages (zero errors expected)
+pnpm build       # Production build for web and Slack apps
+pnpm lint        # Lint all packages (zero errors expected)
+```
+
+## Quick reference
+
+| Task                               | Command             |
+| ---------------------------------- | ------------------- |
+| Install dependencies               | `pnpm install`      |
+| Start Supabase local               | `supabase start`    |
+| Stop Supabase local                | `supabase stop`     |
+| Reset database (migrations + seed) | `supabase db reset` |
+| Start dev servers                  | `pnpm dev`          |
+| Type-check                         | `pnpm typecheck`    |
+| Build                              | `pnpm build`        |
+| Lint                               | `pnpm lint`         |
+| Push migrations to remote          | `pnpm db:push`      |
+| Validate env vars                  | `pnpm env:check`    |
 
 ## Troubleshooting
 
-- **Port in use:** change the dev port per Next.js docs or stop the conflicting process.
-- **DB connection errors:** verify `DATABASE_URL`, firewall, and that PostgreSQL accepts local connections.
-- **Stale build:** remove `.next` and reinstall dependencies if the team agrees that is safe for your OS.
+| Issue                          | Fix                                                                                                 |
+| ------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `supabase start` fails         | Make sure Docker is running (`docker info`)                                                         |
+| Missing Supabase credentials   | Re-run `supabase start` — credentials are printed each time                                         |
+| Slack app crashes on startup   | Verify all three Slack tokens are set in `.env.local` (see [docs/SLACK_SETUP.md](./SLACK_SETUP.md)) |
+| Port 3000 in use               | Stop the conflicting process or set a custom port                                                   |
+| Stale build artifacts          | Delete `.next` in `apps/web` and re-run `pnpm build`                                                |
+| Migration errors on `db reset` | Ensure Supabase local is running, then retry                                                        |
 
-If something in this doc is wrong or outdated, open a PR to fix it.
+## What to read next
+
+- **[docs/SLACK_SETUP.md](./SLACK_SETUP.md)** — detailed Slack app creation and token setup
+- **[docs/KNOWN_LIMITATIONS.md](./KNOWN_LIMITATIONS.md)** — known limitations and deferred items in the MVP build
+- **[CONTRIBUTING.md](../CONTRIBUTING.md)** — branching, PRs, and review expectations
+- **[docs/code-standards.md](./code-standards.md)** — code organization and responsibilities
+
+If something in this guide is wrong or outdated, open a PR to fix it.

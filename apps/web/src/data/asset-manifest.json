@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-04-02T19:02:48.141Z",
+  "entries": [
+    {
+      "assetKey": "enemy:placeholder_enemy:idle",
+      "filePath": "assets/enemy/placeholder_enemy/placeholder_enemy_idle.png",
+      "width": 1,
+      "height": 1,
+      "category": "enemy",
+      "variants": [
+        {
+          "category": "pose",
+          "value": "idle"
+        }
+      ]
+    },
+    {
+      "assetKey": "environment:default_env:day",
+      "filePath": "assets/environment/default_env/default_env_day.webp",
+      "width": 1,
+      "height": 1,
+      "category": "environment",
+      "variants": [
+        {
+          "category": "lighting",
+          "value": "day"
+        }
+      ]
+    },
+    {
+      "assetKey": "effect:attack_slash",
+      "filePath": "assets/effect/attack_slash/attack_slash.png",
+      "width": 1,
+      "height": 1,
+      "category": "effect"
+    },
+    {
+      "assetKey": "effect:env_fog",
+      "filePath": "assets/effect/env_fog/env_fog.png",
+      "width": 1,
+      "height": 1,
+      "category": "effect"
+    },
+    {
+      "assetKey": "effect:generic_flash",
+      "filePath": "assets/effect/generic_flash/generic_flash.png",
+      "width": 1,
+      "height": 1,
+      "category": "effect"
+    },
+    {
+      "assetKey": "effect:magic_spark",
+      "filePath": "assets/effect/magic_spark/magic_spark.png",
+      "width": 1,
+      "height": 1,
+      "category": "effect"
+    },
+    {
+      "assetKey": "effect:status_shield",
+      "filePath": "assets/effect/status_shield/status_shield.png",
+      "width": 1,
+      "height": 1,
+      "category": "effect"
+    },
+    {
+      "assetKey": "icon:placeholder",
+      "filePath": "assets/icon/placeholder/placeholder.png",
+      "width": 1,
+      "height": 1,
+      "category": "icon"
+    },
+    {
+      "assetKey": "ui_frame:placeholder",
+      "filePath": "assets/ui_frame/placeholder/placeholder.png",
+      "width": 1,
+      "height": 1,
+      "category": "ui_frame"
+    },
+    {
+      "assetKey": "overlay:placeholder",
+      "filePath": "assets/overlay/placeholder/placeholder.png",
+      "width": 1,
+      "height": 1,
+      "category": "overlay"
+    },
+    {
+      "assetKey": "effect:fallback",
+      "filePath": "assets/fallback/effect_fallback.png",
+      "width": 1,
+      "height": 1,
+      "category": "effect"
+    },
+    {
+      "assetKey": "enemy:fallback",
+      "filePath": "assets/fallback/enemy_fallback.png",
+      "width": 1,
+      "height": 1,
+      "category": "enemy"
+    },
+    {
+      "assetKey": "environment:fallback",
+      "filePath": "assets/fallback/environment_fallback.png",
+      "width": 1,
+      "height": 1,
+      "category": "environment"
+    },
+    {
+      "assetKey": "icon:fallback",
+      "filePath": "assets/fallback/icon_fallback.png",
+      "width": 1,
+      "height": 1,
+      "category": "icon"
+    },
+    {
+      "assetKey": "overlay:fallback",
+      "filePath": "assets/fallback/overlay_fallback.png",
+      "width": 1,
+      "height": 1,
+      "category": "overlay"
+    },
+    {
+      "assetKey": "ui_frame:fallback",
+      "filePath": "assets/fallback/ui_frame_fallback.png",
+      "width": 1,
+      "height": 1,
+      "category": "ui_frame"
+    }
+  ]
+}

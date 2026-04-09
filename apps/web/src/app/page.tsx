@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { BookOpen, Compass, LayoutDashboard } from "lucide-react";
+import { LayoutDashboard, Swords, Sparkles } from "lucide-react";
 import { CrestMark } from "@/components/crest-mark";
-import { HuntShell } from "@/components/hunt-shell";
 import { DEV_TEST_SLACK_USER_ID } from "@/lib/dev-test-user";
 
 type HomeSearchParams = {
@@ -29,44 +28,72 @@ export default async function HomePage({
       : "/hunts";
 
   return (
-    <HuntShell maxWidthClass="max-w-3xl">
-      <div className="flex min-h-[calc(100vh-8rem)] flex-col items-center justify-center text-center">
-        <CrestMark className="mb-6 h-24 w-24 drop-shadow-lg sm:h-28 sm:w-28" />
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-500/90">
+    <div className="lh-fantasy-ui relative min-h-screen overflow-hidden">
+      {/* Atmospheric background layers */}
+      <div className="lh-title-bg" aria-hidden />
+      <div className="lh-title-vignette" aria-hidden />
+      <div className="lh-title-particles" aria-hidden />
+
+      {/* Main content */}
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-5 py-16">
+        {/* Crest with glow */}
+        <div className="lh-title-crest-glow relative mb-8">
+          <CrestMark className="h-28 w-28 drop-shadow-[0_0_24px_rgba(242,201,76,0.35)] sm:h-36 sm:w-36" />
+        </div>
+
+        {/* Title lockup */}
+        <p className="lh-title-subtitle text-xs font-semibold uppercase tracking-[0.3em]">
+          Prepare for the Hunt
+        </p>
+        <h1
+          className="font-display mt-3 max-w-2xl text-center text-5xl font-bold leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl"
+          style={{ color: "var(--lh-text-primary)" }}
+        >
           Legendary Hunts
-        </p>
-        <h1 className="font-display mt-3 max-w-xl text-4xl font-bold leading-tight tracking-tight text-zinc-50 sm:text-5xl">
-          Certification prep, leveled up
         </h1>
-        <p className="mt-5 max-w-md text-pretty text-base leading-relaxed text-zinc-400">
-          Quick study rituals in Slack. Deeper runs—hunts, encounters, and explanations—on the web.
+        <p
+          className="mt-2 text-center font-display text-lg tracking-wide sm:text-xl"
+          style={{ color: "var(--lh-accent-gold)", opacity: 0.85 }}
+        >
+          Certification prep, leveled up
         </p>
+        <p
+          className="mt-5 max-w-md text-center text-sm leading-relaxed"
+          style={{ color: "var(--lh-text-muted)" }}
+        >
+          Quick study rituals in Slack. Deeper runs — hunts, encounters, and
+          explanations — on the web.
+        </p>
+
+        {/* Action buttons */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <Link href={huntsHref} className="lh-title-btn lh-title-btn--primary">
+            <Swords className="h-4 w-4" aria-hidden />
+            Begin Hunt
+          </Link>
           <Link
             href="/dashboard"
-            className="lh-panel inline-flex items-center gap-2 border-amber-900/40 bg-amber-950/30 px-5 py-3 text-sm font-semibold text-amber-100 transition hover:border-amber-600/50 hover:bg-amber-950/50"
+            className="lh-title-btn lh-title-btn--secondary"
           >
-            <LayoutDashboard className="h-4 w-4 text-amber-400" aria-hidden />
+            <LayoutDashboard className="h-4 w-4" aria-hidden />
             Dashboard
           </Link>
-          <Link
-            href={huntsHref}
-            className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-900/80 px-5 py-3 text-sm font-semibold text-zinc-100 shadow-lg shadow-black/30 transition hover:border-zinc-500 hover:bg-zinc-800/90"
-          >
-            <Compass className="h-4 w-4 text-amber-500/90" aria-hidden />
-            Hunts
-          </Link>
         </div>
-        <div className="lh-panel mt-14 flex max-w-lg flex-col gap-3 border-zinc-800/60 p-5 text-left sm:flex-row sm:items-center sm:gap-5">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-amber-500/15 text-amber-400">
-            <BookOpen className="h-5 w-5" aria-hidden />
+
+        {/* Feature callout */}
+        <div className="lh-title-callout mt-16 max-w-lg">
+          <div className="lh-title-callout-icon">
+            <Sparkles className="h-5 w-5" aria-hidden />
           </div>
-          <p className="text-sm leading-relaxed text-zinc-400">
-            Each hunt is a path through topics. Battles mix questions and puzzles in one flow—no mode
-            switching, just the next encounter.
+          <p
+            className="text-sm leading-relaxed"
+            style={{ color: "var(--lh-text-muted)" }}
+          >
+            Each hunt is a path through topics. Battles mix questions and
+            puzzles in one flow — no mode switching, just the next encounter.
           </p>
         </div>
       </div>
-    </HuntShell>
+    </div>
   );
 }

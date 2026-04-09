@@ -1,0 +1,3 @@
+# Amazon Nova Act SDK - browser automation for AI agents
+# Requires Python 3.10+
+nova-act>=3.0
