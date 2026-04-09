@@ -10,7 +10,7 @@
   "dependencies": {
     "@legendary-hunts/config": "workspace:*",
     "@legendary-hunts/types": "workspace:*",
-    "@slack/bolt": "^4.5.0",
+    "@slack/bolt": "^4.7.0",
     "@slack/oauth": "^3.0.0",
     "@slack/types": "^2.20.1",
     "@supabase/supabase-js": "^2.56.0",
